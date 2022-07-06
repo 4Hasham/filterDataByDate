@@ -4,6 +4,10 @@ mobiscroll.setOptions({
     themeVariant: 'light'
 });
 
+var startDate = null;
+var endDate = null;
+var data = [];
+var returnData = [];
 var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 var box = document.getElementById("select_filter_table");
 var inflated = document.getElementById("box-inflated");
@@ -24,8 +28,18 @@ closeButton.onclick = function() {
     boxDate.innerText = boxDateText;
 }
 
+function setData(d) {
+    data = d;
+}
+
+function setRange(start, end) {
+    startDate = start;
+    endDate = end;
+    picker.setVal([start, end]);
+}
+
 function setToday() {
-    picker.setVal([new Date(), new Date()]);
+    setRange(new Date(), new Date());
 }
 
 function setYesterday() {
@@ -36,7 +50,7 @@ function setYesterday() {
     let newStartMonth = (today.getDate() - 1 <= 0) ? (today.getMonth() - 1) % 12 : today.getMonth();
     let newStartYear = (today.getMonth() - newStartMonth < 0) ? today.getFullYear() - 1 : today.getFullYear();
     console.log(newStartDate, newStartMonth, newStartYear);
-    picker.setVal([new Date(newStartYear, newStartMonth, newStartDate), new Date(newStartYear, newStartMonth, newStartDate)]);
+    setRange(new Date(newStartYear, newStartMonth, newStartDate), new Date(newStartYear, newStartMonth, newStartDate));
 }
 
 function thisWeek() {
@@ -47,7 +61,7 @@ function thisWeek() {
     let newStartDate = (today.getDate() - weekOffset <= 0) ? totalDaysLast + (today.getDate() - weekOffset) : today.getDate() - weekOffset;
     let newStartMonth = today.getDate() - weekOffset <= 0 ? (today.getMonth() - 1) % 12 : today.getMonth();
     let newStartYear = today.getMonth() - newStartMonth < 0 ? today.getFullYear() - 1 : today.getFullYear();
-    picker.setVal([new Date(newStartYear, newStartMonth, newStartDate), new Date(today.getFullYear(), today.getMonth(), today.getDate() + (7 - (weekOffset + 1)))]);    
+    setRange(new Date(newStartYear, newStartMonth, newStartDate), new Date(today.getFullYear(), today.getMonth(), today.getDate() + (7 - (weekOffset + 1))));    
 }
 
 function lastWeek() {
@@ -62,7 +76,7 @@ function lastWeek() {
     let newStartDate = (focalDate - weekOffset <= 0) ? totalDaysLast + (focalDate - weekOffset) : focalDate - weekOffset;
     let newStartMonth = focalMonth - weekOffset <= 0 ? focalMonth - 1 : focalMonth;
     let newStartYear = focalMonth - newStartMonth < 0 ? focalYear - 1 : focalYear;
-    picker.setVal([new Date(newStartYear, newStartMonth, newStartDate), new Date(focalYear, focalMonth, focalDate + (7 - (weekOffset + 1)))]);    
+    setRange(new Date(newStartYear, newStartMonth, newStartDate), new Date(focalYear, focalMonth, focalDate + (7 - (weekOffset + 1))));    
 }
 
 function lastSevenDays() {
@@ -73,7 +87,7 @@ function lastSevenDays() {
     let newStartMonth = (today.getDate() - 6 <= 0) ? (today.getMonth() - 1) % 12 : today.getMonth();
     let newStartYear = (today.getMonth() - newStartMonth < 0) ? today.getFullYear() - 1 : today.getFullYear();
     console.log(newStartDate, newStartMonth, newStartYear);
-    picker.setVal([new Date(newStartYear, newStartMonth, newStartDate), new Date(today.getFullYear(), today.getMonth(), today.getDate())]);
+    setRange(new Date(newStartYear, newStartMonth, newStartDate), new Date(today.getFullYear(), today.getMonth(), today.getDate()));
 }
 
 function lastFourteenDays() {
@@ -84,12 +98,12 @@ function lastFourteenDays() {
     let newStartMonth = (today.getDate() - 13 <= 0) ? (today.getMonth() - 1) % 12 : today.getMonth();
     let newStartYear = (today.getMonth() - newStartMonth < 0) ? today.getFullYear() - 1 : today.getFullYear();
     console.log(newStartDate, newStartMonth, newStartYear);
-    picker.setVal([new Date(newStartYear, newStartMonth, newStartDate), new Date(today.getFullYear(), today.getMonth(), today.getDate())]);
+    setRange(new Date(newStartYear, newStartMonth, newStartDate), new Date(today.getFullYear(), today.getMonth(), today.getDate()));
 }
 
 function thisMonth() {
     var today = new Date();
-    picker.setVal([new Date(today.getFullYear(), today.getMonth(), 1), new Date(today.getFullYear(), today.getMonth(), 32 - new Date(today.getFullYear(), today.getMonth(), 32).getDate())]);
+    setRange(new Date(today.getFullYear(), today.getMonth(), 1), new Date(today.getFullYear(), today.getMonth(), 32 - new Date(today.getFullYear(), today.getMonth(), 32).getDate()));
 }
 
 function lastThirtyDays() {
@@ -100,14 +114,14 @@ function lastThirtyDays() {
     let newStartMonth = (today.getDate() - 30 <= 0) ? (today.getMonth() - 1) % 12 : today.getMonth();
     let newStartYear = (today.getMonth() - newStartMonth < 0) ? today.getFullYear() - 1 : today.getFullYear();
     console.log(newStartDate, newStartMonth, newStartYear);
-    picker.setVal([new Date(newStartYear, newStartMonth, newStartDate), new Date(today.getFullYear(), today.getMonth(), today.getDate())]);
+    setRange(new Date(newStartYear, newStartMonth, newStartDate), new Date(today.getFullYear(), today.getMonth(), today.getDate()));
 }
 
 function lastMonth() {
     var today = new Date();
     let newStartMonth = (today.getMonth() - 1) % 12;
     let newStartYear = (today.getMonth() - 1 < 0) ? today.getFullYear() - 1 : today.getFullYear();
-    picker.setVal([new Date(newStartYear, newStartMonth, 1), new Date(newStartYear, newStartMonth, 32 - new Date(newStartYear, newStartMonth, 32).getDate())]);
+    setRange(new Date(newStartYear, newStartMonth, 1), new Date(newStartYear, newStartMonth, 32 - new Date(newStartYear, newStartMonth, 32).getDate()));
 }
 
 function allTime() {
